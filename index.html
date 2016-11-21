@@ -1,0 +1,84 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Hello World</title>
+<body>
+<script src="pixi.js"></script>
+<script>
+
+//Test that Pixi is working
+console.log(PIXI);
+
+//Create the renderer
+var renderer = PIXI.autoDetectRenderer(800, 404);
+
+//Add the canvas to the HTML document
+document.body.appendChild(renderer.view);
+
+//Create a container object called the `stage`
+var stage = new PIXI.Container();
+
+
+var BlinkTwiceTexture = PIXI.Texture.fromVideo('assets/BlinkTwice1.mp4');
+var BlinkOnceTexture = PIXI.Texture.fromVideo('assets/BlinkOnce.mp4');
+var LookUpTexture = PIXI.Texture.fromVideo('assets/LookUp.mp4');
+var LookRightLeftTexture = PIXI.Texture.fromVideo('assets/LookRight-Left.mp4');
+
+var AllTexture = []
+AllTexture.push(BlinkTwiceTexture)
+AllTexture.push(BlinkOnceTexture)
+AllTexture.push(LookUpTexture)
+AllTexture.push(LookRightLeftTexture)
+
+// create a new Sprite using the video texture (yes it's that easy)
+var videoSprite = [];
+for (var i = 0; i<4 ; i++)
+ videoSprite[i] = new PIXI.Sprite(AllTexture[i]);
+
+
+videoSprite.width = renderer.width;
+videoSprite.height = renderer.height;
+
+stage.addChild(videoSprite[0]);
+
+var t0 =  new Date().getTime();
+var t1 =  new Date().getTime();
+animate();
+
+function animate(){
+
+    // render the stage
+    renderer.render(stage);
+
+    requestAnimationFrame(animate);
+
+    t1 = new Date().getTime();
+    if(t1 - t0 > 6000)
+    {
+        for (var i = stage.children.length - 1; i >= 0; i--) 
+        {  
+            stage.removeChild(stage.children[i]);
+        }
+
+        var x = Math.floor(Math.random() * 5);
+        stage.addChild(videoSprite[x]);
+        AllTexture[x].baseTexture.source.play();
+
+        t1 = t0 = new Date().getTime();
+
+    }
+
+
+
+    // if(BlinkTwiceTexture.baseTexture.source.ended){
+    //     // videoSprite.alpha = 50;
+    //     stage.addChild(videoSprite2);
+    //     // LookRightLeftTexture.baseTexture.source.currentTime = 2;
+    //     LookRightLeftTexture.baseTexture.source.pause();
+    //     LookRightLeftTexture.baseTexture.source.play();
+    // }
+
+
+}
+
+</script>
+</body>
